@@ -38,8 +38,10 @@ public class MyClientTask extends AsyncTask<Void, Void, Void> {
             bw.newLine();
             bw.flush();
 
+            /*
             BufferedReader br = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             System.out.println(br.readLine());
+            */
 
         } catch (UnknownHostException e) {
             // TODO Auto-generated catch block

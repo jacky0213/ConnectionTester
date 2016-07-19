@@ -1,7 +1,5 @@
 package com.example.jacky.connectiontester;
 
-import android.os.AsyncTask;
-import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -10,19 +8,11 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.net.InetSocketAddress;
-import java.net.Socket;
-import java.net.SocketAddress;
-import java.net.UnknownHostException;
-import java.nio.Buffer;
-
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
+import java.net.SocketException;
 
 public class MainActivity extends AppCompatActivity {
     public static final String CONN_INFO = "Connection Information";
@@ -32,7 +22,7 @@ public class MainActivity extends AppCompatActivity {
     Button connBtn, clearBtn;
     String targetAdd;
     int targetPort;
-
+    DatagramSocket serverSocket = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,9 +35,6 @@ public class MainActivity extends AppCompatActivity {
         clearBtn = (Button) findViewById(R.id.clearBtn);
         responseTv = (TextView) findViewById(R.id.responseTv);
 
-        //targetAddEt.setText(SERVERADDRESS);
-        //targetPortEt.setText(String.valueOf(SERVERPORT));
-
 
         connBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -55,30 +42,24 @@ public class MainActivity extends AppCompatActivity {
                 targetAdd = targetAddEt.getText().toString();
                 targetPort = Integer.parseInt(targetPortEt.getText().toString());
 
-                MyClientTask myClientTask = new MyClientTask(targetAdd, targetPort);
-                myClientTask.execute();
+                MyClientTask tcpConn = new MyClientTask(targetAdd, targetPort);
+                tcpConn.execute();
 
                 Log.w(CONN_INFO, "Server IP: " + targetAdd + " / " + "Server Port: " + targetPort);
             }
         });
 
-
         clearBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //responseTv.setText("Response");
-                //targetAddEt.setText("");
-                //targetPortEt.setText("");
+                targetAdd = targetAddEt.getText().toString();
+                targetPort = Integer.parseInt(targetPortEt.getText().toString());
+
+                Thread udpConn = new Thread(new MyClientTask2());
+                udpConn.start();
             }
         });
 
 
     }
-        /*
-
-    */
-
-
-
-
 }

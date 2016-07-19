@@ -44,7 +44,7 @@
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Connect"
+        android:text="TCP Connection"
         android:id="@+id/connBtn"
         android:layout_below="@+id/targetPortEt"
         android:layout_centerHorizontal="true"
@@ -53,7 +53,7 @@
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Clear"
+        android:text="UDP Connection"
         android:id="@+id/clearBtn"
         android:layout_below="@+id/connBtn"
         android:layout_centerHorizontal="true" />
