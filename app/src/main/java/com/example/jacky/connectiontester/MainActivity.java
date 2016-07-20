@@ -24,29 +24,32 @@ public class MainActivity extends AppCompatActivity {
     public static final String CONN_INFO = "Connection Information";
 
     TextView responseTv;
-    EditText targetAddEt, targetPortEt;
+    EditText tcpAddrEt, tcpPortEt, udpAddrEt, udpPortEt;
     Button tcpConnBtn, udpConnBtn;
     String targetAdd;
     int targetPort;
-    DatagramSocket serverSocket = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        targetAddEt = (EditText) findViewById(R.id.targetAddEt);
-        targetPortEt = (EditText) findViewById(R.id.targetPortEt);
+        tcpAddrEt = (EditText) findViewById(R.id.tcpAddrEt);
+        tcpPortEt = (EditText) findViewById(R.id.tcpPortEt);
+        udpAddrEt = (EditText) findViewById(R.id.udpAddrEt);
+        udpPortEt = (EditText) findViewById(R.id.udpPortEt);
+
         tcpConnBtn = (Button) findViewById(R.id.tcpConnBtn);
         udpConnBtn = (Button) findViewById(R.id.udpConnBtn);
+
         responseTv = (TextView) findViewById(R.id.responseTv);
 
 
         tcpConnBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                targetAdd = targetAddEt.getText().toString();
-                targetPort = Integer.parseInt(targetPortEt.getText().toString());
+                targetAdd = tcpAddrEt.getText().toString();
+                targetPort = Integer.parseInt(tcpPortEt.getText().toString());
 
                 MyClientTask tcpConn = new MyClientTask(targetAdd, targetPort);
                 tcpConn.execute();
@@ -57,8 +60,8 @@ public class MainActivity extends AppCompatActivity {
         udpConnBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                targetAdd = targetAddEt.getText().toString();
-                targetPort = Integer.parseInt(targetPortEt.getText().toString());
+                targetAdd = udpAddrEt.getText().toString();
+                targetPort = Integer.parseInt(udpPortEt.getText().toString());
 
                 Thread udpConn = new Thread(new MyClientTask2());
                 udpConn.start();
