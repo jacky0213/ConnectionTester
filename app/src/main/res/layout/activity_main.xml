@@ -29,7 +29,7 @@
         android:layout_marginTop="44dp"
         android:hint="Target Address"
         android:textSize="20dp"
-        android:text="192.168.1.106" />
+        android:text="54.255.207.187" />
 
     <EditText
         android:layout_width="match_parent"
@@ -39,13 +39,13 @@
         android:layout_below="@+id/targetAddEt"
         android:layout_centerHorizontal="true"
         android:textSize="20dp"
-        android:text="110" />
+        android:text="47305" />
 
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="TCP Connection"
-        android:id="@+id/connBtn"
+        android:id="@+id/tcpConnBtn"
         android:layout_below="@+id/targetPortEt"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="32dp" />
@@ -54,16 +54,15 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="UDP Connection"
-        android:id="@+id/clearBtn"
-        android:layout_below="@+id/connBtn"
+        android:id="@+id/udpConnBtn"
+        android:layout_below="@+id/tcpConnBtn"
         android:layout_centerHorizontal="true" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/responseTv"
-        android:layout_below="@+id/clearBtn"
+        android:layout_below="@+id/udpConnBtn"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="45dp"
-        android:text="Response" />
+        android:layout_marginTop="45dp" />
 </RelativeLayout>
