@@ -24,9 +24,11 @@ public class MainActivity extends AppCompatActivity {
     public static final String CONN_INFO = "Connection Information";
 
     TextView responseTv;
-    EditText tcpAddrEt, tcpPortEt, udpAddrEt, udpPortEt;
+    EditText tcpAddrEt, tcpPortEt, tcpMsgEt, udpAddrEt, udpPortEt, udpMsgEt;
     Button tcpConnBtn, udpConnBtn;
     String targetAdd;
+
+
     int targetPort;
 
     @Override
@@ -36,8 +38,10 @@ public class MainActivity extends AppCompatActivity {
 
         tcpAddrEt = (EditText) findViewById(R.id.tcpAddrEt);
         tcpPortEt = (EditText) findViewById(R.id.tcpPortEt);
+        tcpMsgEt = (EditText) findViewById(R.id.tcpMsgEt);
         udpAddrEt = (EditText) findViewById(R.id.udpAddrEt);
         udpPortEt = (EditText) findViewById(R.id.udpPortEt);
+        udpMsgEt = (EditText) findViewById(R.id.tcpMsgEt);
 
         tcpConnBtn = (Button) findViewById(R.id.tcpConnBtn);
         udpConnBtn = (Button) findViewById(R.id.udpConnBtn);
@@ -50,8 +54,9 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 targetAdd = tcpAddrEt.getText().toString();
                 targetPort = Integer.parseInt(tcpPortEt.getText().toString());
+                String message = tcpMsgEt.getText().toString();
 
-                MyClientTask tcpConn = new MyClientTask(targetAdd, targetPort);
+                MyClientTask tcpConn = new MyClientTask(targetAdd, targetPort, message);
                 tcpConn.execute();
             }
         });
@@ -62,14 +67,16 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 targetAdd = udpAddrEt.getText().toString();
                 targetPort = Integer.parseInt(udpPortEt.getText().toString());
+                String message = udpMsgEt.getText().toString();
 
-                Thread udpConn = new Thread(new MyClientTask2());
+                Thread udpConn = new Thread(new MyClientTask2(targetAdd, targetPort, message));
                 udpConn.start();
             }
         });
 
     }
 
+    //TCP Class*****************************************************************************************
     public class MyClientTask extends AsyncTask<Void, Void, Void> {
         public static final String CONN_INFO = "Connection Information";
         Socket socket = null;
@@ -77,10 +84,12 @@ public class MainActivity extends AppCompatActivity {
         String dstAddress;
         int dstPort;
         String response = "";
+        String message;
 
-        MyClientTask(String addr, int port){
+        MyClientTask(String addr, int port, String message){
             dstAddress = addr;
             dstPort = port;
+            this.message = message;
         }
 
         @Override
@@ -92,7 +101,7 @@ public class MainActivity extends AppCompatActivity {
 
                 //Send message to server
                 BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
-                bw.write("Hello server - TCP");
+                bw.write(message);
                 bw.newLine();
                 bw.flush();
                 Log.w(CONN_INFO, "Server IP: " + targetAdd + " / " + "Server Port: " + targetPort + " / Type: TCP");
@@ -126,28 +135,48 @@ public class MainActivity extends AppCompatActivity {
             responseTv.setText(response);
             super.onPostExecute(result);
         }
+
+        public String getResponse(){
+            return response;
+        }
+
     }
 
+
+    //UDP Class*****************************************************************************************
     public class MyClientTask2 implements Runnable {
         MyClientTask2(){}
 
+        String dstAddress;
+        int dstPort;
+        String msg = "";
+        String response = "";
+
+        MyClientTask2(String addr, int port, String message){
+            dstAddress = addr;
+            dstPort = port;
+            msg = message;
+        }
+
         public void run(){
             DatagramSocket socket = null;
-            String response = "";
+            byte[] sendData = new byte[1024];
+            byte[] receiveData = new byte[1024];
 
             try{
                 socket = new DatagramSocket();
-                InetAddress serverAddress = InetAddress.getByName(targetAdd);
-                String str = "Hello Server - UDP";
+                InetAddress serverAddress = InetAddress.getByName(dstAddress);
+                sendData = msg.getBytes();
 
                 //Send message to server
-                DatagramPacket packet = new DatagramPacket(str.getBytes(),str.length(),serverAddress,targetPort);
-                socket.send(packet);
-                Log.w(CONN_INFO, "Server IP: " + targetAdd + " / " + "Server Port: " + targetPort + " / Type: UDP");
+                DatagramPacket sendpacket = new DatagramPacket(sendData, sendData.length, serverAddress, dstPort);
+                socket.send(sendpacket);
+                Log.w(CONN_INFO, "Server IP: " + dstAddress + " / " + "Server Port: " + dstPort + " / Type: UDP");
 
                 //Receive message from server
-                socket.receive(packet);
-                response = new String(packet.getData(), 0, packet.getLength());
+                DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
+                socket.receive(receivePacket);
+                response = new String(receivePacket.getData(), 0, receivePacket.getLength());
                 Log.w(CONN_INFO, "From server: " + response);
 
                 responseTv.setText(response);
