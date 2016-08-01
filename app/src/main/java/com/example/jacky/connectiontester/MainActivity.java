@@ -112,6 +112,7 @@ public class MainActivity extends AppCompatActivity {
                 response = msg.readLine();
 
                 Log.w(CONN_INFO, "From server: " + response);
+                Log.i(CONN_INFO, "Connection closed");
 
             } catch (UnknownHostException e) {
                 e.printStackTrace();
